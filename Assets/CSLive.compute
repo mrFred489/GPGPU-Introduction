@@ -1,0 +1,31 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+
+
+Texture2D<float4> InputTexture;
+RWTexture2D<float4> Result; // RW = Read Write
+
+float4x4 ColorTransform;
+
+[numthreads(8,8,1)] // x axis threads, y axis threads, z axis threads
+void CSMain (
+    uint3 groupID : SV_GroupID,
+    uint3 id : SV_DispatchThreadID,
+    uint groupIndex : SV_GroupIndex // linear, unique index within group
+    )
+{
+    // TODO: insert actual code here!
+    // Result[id.xy] is common to use
+
+
+
+    // Result[id.xy] = float4(groupID.x / 8.0, groupID.y / 4.0, groupIndex / 64.0, 1);
+    // Result[id.xy] = float4(groupIndex / 64.0, 0,0, 1);
+    // Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    // Note: directly accessing texture
+    Result[id.xy] = mul(ColorTransform, InputTexture[id.xy]);
+}

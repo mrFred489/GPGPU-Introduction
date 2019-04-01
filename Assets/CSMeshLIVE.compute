@@ -1,0 +1,17 @@
+﻿#pragma kernel CSTriangles
+
+struct Triangle {
+    float3 center;
+    float3 normal;
+};
+
+RWStructuredBuffer<Triangle> ResultTriangles;
+
+[numthreads(64,1,1)] // common to only use one dimension when working with structured buffers
+void CSTriangles (uint3 id : SV_DispatchThreadID)
+{
+    Triangle result;
+    result.center = float3(id.x * 0.1, 0, 0);
+    result.normal = float3(0,1,0);
+    ResultTriangles[id.x] = result;
+}
