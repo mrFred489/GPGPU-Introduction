@@ -5,13 +5,24 @@ struct Triangle {
     float3 normal;
 };
 
+
+
 RWStructuredBuffer<Triangle> ResultTriangles;
+StructuredBuffer<int> Indices;
+StructuredBuffer<float3> Positions;
 
 [numthreads(64,1,1)] // common to only use one dimension when working with structured buffers
 void CSTriangles (uint3 id : SV_DispatchThreadID)
 {
+    int id1 = Indices[id.x * 3];
+    int id2 = Indices[id.x * 3 + 1];
+    int id3 = Indices[id.x * 3 + 2];
+
+    float3 p1 = Positions[id1];
+    float3 p2 = Positions[id2];
+    float3 p3 = Positions[id3];
     Triangle result;
-    result.center = float3(id.x * 0.1, 0, 0);
-    result.normal = float3(0,1,0);
+    result.center = (p1 + p2 + p3)/3;
+    result.normal = float3(0,0.1,0);
     ResultTriangles[id.x] = result;
 }
